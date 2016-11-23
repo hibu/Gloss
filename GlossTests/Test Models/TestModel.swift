@@ -34,6 +34,7 @@ struct TestModel: Glossy {
     let float: Float?
     let floatArray: [Float]?
     let dictionary: [String : TestNestedModel]?
+    let dictionaryWithArray: [String : [TestNestedModel]]?
     let double: Double?
     let doubleArray: [Double]?
     let string: String?
@@ -42,12 +43,22 @@ struct TestModel: Glossy {
     let nestedModelArray: [TestNestedModel]?
     let enumValue: EnumValue?
     let enumValueArray: [EnumValue]?
-    let date: NSDate?
-    let dateArray: [NSDate]?
-    let dateISO8601: NSDate?
-    let dateISO8601Array: [NSDate]?
-    let url: NSURL?
-    let urlArray: [NSURL]?
+    let date: Date?
+    let dateArray: [Date]?
+    let dateISO8601: Date?
+    let dateISO8601Array: [Date]?
+    let int32: Int32?
+    let int32Array: [Int32]?
+	let uInt32: UInt32?
+	let uInt32Array: [UInt32]?
+	let int64: Int64?
+    let int64Array: [Int64]?
+	let uInt64: UInt64?
+	let uInt64Array: [UInt64]?
+	let url: URL?
+    let urlArray: [URL]?
+    let uuid: UUID?
+    let uuidArray: [UUID]?
     
     enum EnumValue: String {
         case A = "A"
@@ -71,18 +82,29 @@ struct TestModel: Glossy {
         self.double = "double" <~~ json
         self.doubleArray = "doubleArray" <~~ json
         self.dictionary = "dictionary" <~~ json
+        self.dictionaryWithArray = "dictionaryWithArray" <~~ json
         self.string = "string" <~~ json
         self.stringArray = "stringArray" <~~ json
         self.nestedModel = "nestedModel" <~~ json
         self.nestedModelArray = "nestedModelArray" <~~ json
         self.enumValue = "enumValue" <~~ json
         self.enumValueArray = "enumValueArray" <~~ json
-        self.date = Decoder.decodeDate("date", dateFormatter: TestModel.dateFormatter)(json)
-        self.dateArray = Decoder.decodeDateArray("dateArray", dateFormatter: TestModel.dateFormatter)(json)
-        self.dateISO8601 = Decoder.decodeDateISO8601("dateISO8601")(json)
-        self.dateISO8601Array = Decoder.decodeDateISO8601Array("dateISO8601Array")(json)
+        self.date = Decoder.decode(dateForKey: "date", dateFormatter: TestModel.dateFormatter)(json)
+        self.dateArray = Decoder.decode(dateArrayForKey: "dateArray", dateFormatter: TestModel.dateFormatter)(json)
+        self.dateISO8601 = Decoder.decode(dateISO8601ForKey: "dateISO8601")(json)
+        self.dateISO8601Array = Decoder.decode(dateISO8601ArrayForKey: "dateISO8601Array")(json)
+        self.int32 = "int32" <~~ json
+        self.int32Array = "int32Array" <~~ json
+		self.uInt32 = "uInt32" <~~ json
+		self.uInt32Array = "uInt32Array" <~~ json
+        self.int64 = "int64" <~~ json
+        self.int64Array = "int64Array" <~~ json
+		self.uInt64 = "uInt64" <~~ json
+		self.uInt64Array = "uInt64Array" <~~ json
         self.url = "url" <~~ json
         self.urlArray = "urlArray" <~~ json
+        self.uuid = "uuid" <~~ json
+        self.uuidArray = "uuidArray" <~~ json
     }
 
     // MARK: - Serialization
@@ -98,23 +120,34 @@ struct TestModel: Glossy {
             "double" ~~> self.double,
             "doubleArray" ~~> self.doubleArray,
             "dictionary" ~~> self.dictionary,
+            "dictionaryWithArray" ~~> self.dictionaryWithArray,
             "string" ~~> self.string,
             "stringArray" ~~> self.stringArray,
             "nestedModel" ~~> self.nestedModel,
             "nestedModelArray" ~~> self.nestedModelArray,
             "enumValue" ~~> self.enumValue,
             "enumValueArray" ~~> self.enumValueArray,
-            Encoder.encodeDate("date", dateFormatter: TestModel.dateFormatter)(self.date),
-            Encoder.encodeDateArray("dateArray", dateFormatter: TestModel.dateFormatter)(self.dateArray),
-            Encoder.encodeDateISO8601("dateISO8601")(self.dateISO8601),
-            Encoder.encodeDateISO8601Array("dateISO8601Array")(self.dateISO8601Array),
-            "url" ~~> self.url,
-            "urlArray" ~~> self.urlArray
+            Encoder.encode(dateForKey: "date", dateFormatter: TestModel.dateFormatter)(self.date),
+            Encoder.encode(dateArrayForKey: "dateArray", dateFormatter: TestModel.dateFormatter)(self.dateArray),
+            Encoder.encode(dateISO8601ForKey: "dateISO8601")(self.dateISO8601),
+            Encoder.encode(dateISO8601ArrayForKey: "dateISO8601Array")(self.dateISO8601Array),
+            "int32" ~~> self.int32,
+            "int32Array" ~~> self.int32Array,
+			"uInt32" ~~> self.uInt32,
+			"uInt32Array" ~~> self.uInt32Array,
+			"int64" ~~> self.int64,
+            "int64Array" ~~> self.int64Array,
+			"uInt64" ~~> self.uInt64,
+			"uInt64Array" ~~> self.uInt64Array,
+			"url" ~~> self.url,
+            "urlArray" ~~> self.urlArray,
+            "uuid" ~~> self.uuid,
+            "uuidArray" ~~> self.uuidArray
             ])
     }
     
-    static var dateFormatter: NSDateFormatter = {
-        let dateFormatter = NSDateFormatter()
+    static var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         
         return dateFormatter

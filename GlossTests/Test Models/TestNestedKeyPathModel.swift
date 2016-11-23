@@ -1,8 +1,8 @@
 //
 //  TestNestedKeyPathModel.swift
-//  GlossExample
+//  Gloss
 //
-//  Created by Rahul Katariya on 2/1/16.
+//  Created by Maciej Kołek on 10/18/16.
 //  Copyright © 2016 Harlan Kellaway. All rights reserved.
 //
 
@@ -27,4 +27,3 @@ struct TestNestedKeyPathModel: Glossy {
     }
     
 }
-

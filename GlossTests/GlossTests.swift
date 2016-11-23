@@ -37,11 +37,11 @@ class GlossTests: XCTestCase {
         super.setUp()
         
         var testJSON: JSON? = [:]
-        let testJSONPath: NSString = NSBundle(forClass: self.dynamicType).pathForResource("TestModel", ofType: "json")!
-        let testJSONData: NSData = NSData(contentsOfFile: testJSONPath as String)!
+        let testJSONPath: String = Bundle(for: type(of: self)).path(forResource: "TestModel", ofType: "json")!
+        let testJSONData: Data = try! Data(contentsOf: URL(fileURLWithPath: testJSONPath as String))
         
         do {
-            try testJSON = NSJSONSerialization.JSONObjectWithData(testJSONData, options: NSJSONReadingOptions(rawValue: 0)) as? JSON
+            try testJSON = JSONSerialization.jsonObject(with: testJSONData, options: JSONSerialization.ReadingOptions(rawValue: 0)) as? JSON
         } catch {
             print(error)
         }
@@ -53,8 +53,8 @@ class GlossTests: XCTestCase {
             "boolArray" : [true, false, true],
             "integer" : 1,
             "integerArray" : [1, 2, 3],
-            "float" : 2.0,
-            "floatArray" : [1.0, 2.0, 3.0],
+            "float" : Float(2.0),
+            "floatArray" : [Float(1.0), Float(2.0), Float(3.0)],
             "double" : 6.0,
             "doubleArray" : [4.0, 5.0, 6.0],
             "string" : "abc",
@@ -77,7 +77,8 @@ class GlossTests: XCTestCase {
             "enumValueArray" : ["A", "B", "C"],
             "date" : "2015-08-16T20:51:46.600Z",
             "dateISO8601" : "2015-08-08T21:57:13Z",
-            "url" : "http://github.com"
+            "url" : "http://github.com",
+            "uuid" : "964F2FE2-0F78-4C2D-A291-03058C0B98AB"
         ]
         
         let model = TestModel(json: testModelsJSON!)
@@ -92,11 +93,23 @@ class GlossTests: XCTestCase {
         super.tearDown()
     }
     
-    func testDateFormatterISO8601HasCorrectSetup() {
-        let dateFormatterISO8601 = GlossDateFormatterISO8601()
+    func testDateFormatterISO8601HasCorrectLocale() {
+        let dateFormatterISO8601 = GlossDateFormatterISO8601
         
-        XCTAssertTrue(dateFormatterISO8601.locale.localeIdentifier == "en_US_POSIX", "Date formatter ISO8601 should have correct locale.")
+        XCTAssertTrue(dateFormatterISO8601.locale.identifier == "en_US_POSIX", "Date formatter ISO8601 should have correct locale.")
+    }
+    
+    func testDateFormatterISO8601HasCorrectDateFormat() {
+        let dateFormatterISO8601 = GlossDateFormatterISO8601
+        
         XCTAssertTrue(dateFormatterISO8601.dateFormat == "yyyy-MM-dd'T'HH:mm:ssZZZZZ", "Date formatter ISO8601 should have correct date format.")
+    }
+    
+    func testDateFormatterISO8601ForcesGregorianCalendar() {
+        let dateFormatterISO8601 = GlossDateFormatterISO8601
+        
+        XCTAssertTrue(dateFormatterISO8601.calendar.identifier == Calendar.Identifier.gregorian, "Date formatter ISO8601 should force use of Gregorian calendar.")
+         XCTAssertTrue(dateFormatterISO8601.calendar.timeZone.abbreviation() == "GMT", "Date formatter ISO8601 Gregorian calendar should use GMT timezone.")
     }
     
     func testJsonifyTurnsArrayOfJsonDictsToSingleJsonDict() {
@@ -116,9 +129,9 @@ class GlossTests: XCTestCase {
     }
     
     func testModelsFromJSONArrayProducesValidModels() {
-        let result = [TestModel].fromJSONArray(testJSONArray!)
-        let model1: TestModel = result[0]
-        let model2: TestModel = result[1]
+        let result = [TestModel].from(jsonArray: testJSONArray!)
+        let model1: TestModel = result![0]
+        let model2: TestModel = result![1]
         
         XCTAssertTrue((model1.bool == true), "Model created from JSON should have correct property values")
         XCTAssertTrue((model1.boolArray! == [true, false, true]), "Model created from JSON should have correct property values")
@@ -132,9 +145,10 @@ class GlossTests: XCTestCase {
         XCTAssertTrue((model1.stringArray! == ["def", "ghi", "jkl"]), "Model created from JSON should have correct property values")
         XCTAssertTrue((model1.enumValue == TestModel.EnumValue.A), "Model created from JSON should have correct property values")
         XCTAssertTrue((model1.enumValueArray! == [TestModel.EnumValue.A, TestModel.EnumValue.B, TestModel.EnumValue.C]), "Model created from JSON should have correct property values")
-        XCTAssertTrue((TestModel.dateFormatter.stringFromDate(model1.date!) == "2015-08-16T20:51:46.600Z"), "Model created from JSON should have correct property values")
-        XCTAssertTrue((model1.dateISO8601 == NSDate(timeIntervalSince1970: 1439071033)), "Model created from JSON should have correct property values")
+        XCTAssertTrue((TestModel.dateFormatter.string(from: model1.date!) == "2015-08-16T20:51:46.600Z"), "Model created from JSON should have correct property values")
+        XCTAssertTrue((model1.dateISO8601 == Date(timeIntervalSince1970: 1439071033)), "Model created from JSON should have correct property values")
         XCTAssertTrue((model1.url?.absoluteString == "http://github.com"), "Model created from JSON should have correct property values")
+        XCTAssertTrue((model1.uuid?.uuidString == "964F2FE2-0F78-4C2D-A291-03058C0B98AB"), "Model created from JSON should have correct property values")
         
         XCTAssertTrue((model1.nestedModel?.id == 123), "Model created from JSON should have correct property values")
         XCTAssertTrue((model1.nestedModel?.name == "nestedModel1"), "Model created from JSON should have correct property values")
@@ -159,9 +173,10 @@ class GlossTests: XCTestCase {
         XCTAssertTrue((model2.stringArray! == ["def", "ghi", "jkl"]), "Model created from JSON should have correct property values")
         XCTAssertTrue((model2.enumValue == TestModel.EnumValue.A), "Model created from JSON should have correct property values")
         XCTAssertTrue((model2.enumValueArray! == [TestModel.EnumValue.A, TestModel.EnumValue.B, TestModel.EnumValue.C]), "Model created from JSON should have correct property values")
-        XCTAssertTrue((TestModel.dateFormatter.stringFromDate(model1.date!) == "2015-08-16T20:51:46.600Z"), "Model created from JSON should have correct property values")
-        XCTAssertTrue((model2.dateISO8601 == NSDate(timeIntervalSince1970: 1439071033)), "Model created from JSON should have correct property values")
+        XCTAssertTrue((TestModel.dateFormatter.string(from: model1.date!) == "2015-08-16T20:51:46.600Z"), "Model created from JSON should have correct property values")
+        XCTAssertTrue((model2.dateISO8601 == Date(timeIntervalSince1970: 1439071033)), "Model created from JSON should have correct property values")
         XCTAssertTrue((model2.url?.absoluteString == "http://github.com"), "Model created from JSON should have correct property values")
+        XCTAssertTrue((model2.uuid?.uuidString == "964F2FE2-0F78-4C2D-A291-03058C0B98AB"), "Model created from JSON should have correct property values")
         
         XCTAssertTrue((model2.nestedModel?.id == 123), "Model created from JSON should have correct property values")
         XCTAssertTrue((model2.nestedModel?.name == "nestedModel1"), "Model created from JSON should have correct property values")
@@ -174,12 +189,12 @@ class GlossTests: XCTestCase {
         XCTAssertTrue((nestedModel5.name == "nestedModel3"), "Model created from JSON should have correct property values")
     }
     
-    func testModelsFromJSONArrayOnlyIncludesValidModels() {
-        testJSONArray![0].removeValueForKey("bool")
+    func testModelsFromJSONArrayReturnsNilIfDecodingFails() {
+        testJSONArray![0].removeValue(forKey: "bool")
         
-        let result = [TestModel].fromJSONArray(testJSONArray!)
-        
-        XCTAssertTrue(result.count == 1, "Model array from JSON array should only include valid models")
+        let result = [TestModel].from(jsonArray: testJSONArray!)
+
+        XCTAssertNil(result, "Model array from JSON array should be nil is any decoding fails.")
     }
     
     func testJSONArrayFromModelsProducesValidJSON() {
@@ -202,14 +217,16 @@ class GlossTests: XCTestCase {
         XCTAssertTrue(((json1["date"] as! String) == "2015-08-16T20:51:46.600Z"), "JSON created from model should have correct values")
         
         let dateISO8601 = json1["dateISO8601"] as! String
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        let resultDate = dateFormatter.dateFromString(dateISO8601)
+        let resultDate = dateFormatter.date(from: dateISO8601)
         
         XCTAssertTrue(resultDate?.timeIntervalSince1970 == 1439071033, "JSON created from model should have correct values")
         
         XCTAssertTrue((json1["url"] as! String == "http://github.com"), "JSON created from model should have correct values")
+        
+        XCTAssertTrue((json1["uuid"] as! String == "964F2FE2-0F78-4C2D-A291-03058C0B98AB"), "JSON created from model should have correct values")
         
         let nestedModel: JSON = json1["nestedModel"] as! JSON
         
@@ -241,14 +258,16 @@ class GlossTests: XCTestCase {
         XCTAssertTrue(((json2["date"] as! String) == "2015-08-16T20:51:46.600Z"), "JSON created from model should have correct values")
         
         let date2ISO8601 = json2["dateISO8601"] as! String
-        let date2Formatter = NSDateFormatter()
-        date2Formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let date2Formatter = DateFormatter()
+        date2Formatter.locale = Locale(identifier: "en_US_POSIX")
         date2Formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        let resultDate2 = dateFormatter.dateFromString(date2ISO8601)
+        let resultDate2 = dateFormatter.date(from: date2ISO8601)
         
         XCTAssertTrue(resultDate2?.timeIntervalSince1970 == 1439071033, "JSON created from model should have correct values")
         
         XCTAssertTrue((json2["url"] as! String == "http://github.com"), "JSON created from model should have correct values")
+        
+        XCTAssertTrue((json2["uuid"] as! String == "964F2FE2-0F78-4C2D-A291-03058C0B98AB"), "JSON created from model should have correct values")
         
         let nestedModel2: JSON = json2["nestedModel"] as! JSON
         
@@ -263,23 +282,22 @@ class GlossTests: XCTestCase {
         XCTAssertTrue((nestedModel4JSON["name"] as! String == "nestedModel2"), "Encode nested model array should return correct value")
         XCTAssertTrue((nestedModel5JSON["id"] as! Int == 789), "Encode nested model array should return correct value")
         XCTAssertTrue((nestedModel5JSON["name"] as! String == "nestedModel3"), "Encode nested model array should return correct value")
-        
     }
     
-    func testJSONArrayFromModelsOnlyIncludesJSONFromValidModels() {
+    func testJSONArrayFromModelsReturnsNilIfEncodingFails() {
         var invalidJSON = testModelsJSON!
-        invalidJSON.removeValueForKey("bool")
+        invalidJSON.removeValue(forKey: "bool")
         var jsonArray = testJSONArray!
         jsonArray.append(invalidJSON)
-        let result = [TestModel].fromJSONArray(jsonArray)
-        
-        XCTAssertTrue(result.count == 2, "Model array from JSON array should only include valid models")
+        let result = [TestModel].from(jsonArray: jsonArray)
+
+        XCTAssertNil(result, "JSON array from model array should be nil is any encoding fails.")
     }
     
     func testJsonifyTurnsJSONOptionalArrayToSingleJSONOptional() {
         let json1 = ["test1" : 1 ]
         let json2 = ["test2" : 2 ]
-        let result = jsonify([json1, json2])
+        let result = jsonify([json1 as Optional<Dictionary<String, Any>>, json2 as Optional<Dictionary<String, Any>>])
         
         XCTAssertTrue(result!["test1"] as! Int == 1, "Jsonify should turn JSON optional array to single JSON optional")
         XCTAssertTrue(result!["test2"] as! Int == 2, "Jsonify should turn JSON optional array to single JSON optional")
@@ -289,10 +307,6 @@ class GlossTests: XCTestCase {
         let result = jsonify([])
         
         XCTAssertTrue(result!.isEmpty, "Jsonify should return empty JSON when given an empty array")
-    }
-    
-    func testDefaultKeyPathDelimiterIsAPeriod() {
-        XCTAssertTrue(GlossKeyPathDelimiter() == ".", "Deafult key path delimiter should be a period")
     }
     
 }

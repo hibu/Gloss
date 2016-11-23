@@ -30,9 +30,9 @@ struct Repo: Glossy {
     let repoId: Int
     let desc: String?
     let name: String
-    let url: NSURL
+    let url: URL
     let owner: RepoOwner // nested model
-    let ownerUrl: NSURL // nested keypath
+    let ownerURL: URL
     let primaryLanguage: Language?
     
     enum Language: String {
@@ -44,10 +44,10 @@ struct Repo: Glossy {
     
     init?(json: JSON) {
         guard let repoId: Int = "id" <~~ json,
-            let name: String = Decoder.decodeStringUppercase("name", json: json),
-            let url: NSURL = "html_url" <~~ json,
+            let name: String = Decoder.decodeStringUppercase(key: "name", json: json),
+            let url: URL = "html_url" <~~ json,
             let owner: RepoOwner = "owner" <~~ json,
-            let ownerUrl: NSURL = "owner.html_url" <~~ json else {
+            let ownerURL: URL = "owner.html_url" <~~ json else {
                 return nil
         }
         
@@ -56,7 +56,7 @@ struct Repo: Glossy {
         self.desc = "description" <~~ json
         self.url = url
         self.owner = owner
-        self.ownerUrl = ownerUrl
+        self.ownerURL = ownerURL
         self.primaryLanguage = "language" <~~ json
     }
     
@@ -65,11 +65,11 @@ struct Repo: Glossy {
     func toJSON() -> JSON? {
         return jsonify([
             "id" ~~> self.repoId,
-            "name" ~~> Encoder.encodeStringCapitalized("name", value: self.name),
+            Encoder.encodeStringCapitalized(key: "name", value: self.name),
             "description" ~~> self.desc,
             "html_url" ~~> self.url,
             "owner" ~~> self.owner,
-            "owner.html_url" ~~> self.ownerUrl,
+            "owner.html_url" ~~> self.ownerURL,
             "language" ~~> self.primaryLanguage
             ])
     }
@@ -80,8 +80,8 @@ struct Repo: Glossy {
 extension Decoder {
     
     static func decodeStringUppercase(key: String, json: JSON) -> String? {
-        if let string = json.valueForKeyPath(key) as? String {
-            return string.uppercaseString
+        if let string = json[key] as? String {
+            return string.uppercased()
         }
         
         return nil
@@ -93,7 +93,7 @@ extension Encoder {
     
     static func encodeStringCapitalized(key: String, value: String?) -> JSON? {
         if let value = value {
-            return [key : value.capitalizedString]
+            return [key : value.capitalized]
         }
         
         return nil

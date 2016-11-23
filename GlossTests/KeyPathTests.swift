@@ -2,7 +2,7 @@
 //  KeyPathTests.swift
 //  Gloss
 //
-//  Created by Rahul Katariya on 2/1/16.
+//  Created by Maciej Kołek on 10/18/16.
 //  Copyright © 2016 Harlan Kellaway. All rights reserved.
 //
 
@@ -51,11 +51,15 @@ class KeyPathTests: XCTestCase {
     }
     
     func testNestedKeyPathFromJSON() {
-        XCTAssert(nestedKeyPathModel.keyPathModel?.id == 1 && nestedKeyPathModel.keyPathModel?.name == "foo" && nestedKeyPathModel.keyPathModel?.url?.absoluteString == "http://url.com" && nestedKeyPathModel.flag == true, "Should decode with nested key path")
+        XCTAssertTrue(nestedKeyPathModel.keyPathModel?.id == 1, "Should decode with nested key path")
+        XCTAssertTrue(nestedKeyPathModel.keyPathModel?.name == "foo", "Should decode with nested key path")
+        XCTAssertTrue(nestedKeyPathModel.keyPathModel?.url?.absoluteString == "http://url.com", "Should decode with nested key path")
+        XCTAssertTrue(nestedKeyPathModel.flag == true, "Should decode with nested key path")
     }
     
+    
     func testNestedKeyPathToJSON() {
-        XCTAssert((nestedKeyPathModel?.toJSON())! == ["keyPath" : ["id": 1, "args": ["name":"foo", "url": "http://url.com", "flag" : true]]], "Should encode with nested key path")
+        XCTAssertTrue((nestedKeyPathModel?.toJSON())! == nestedKeyPathJSON, "Should encode with nested key path")
     }
     
     func testNonDefaultKeyPathDecode() {
@@ -65,8 +69,10 @@ class KeyPathTests: XCTestCase {
     
     func testNonDefaultKeyPathEncode() {
         let result = keyPathModelWithCustomDelimiter.toJSON()
-        let id = result!["nested"]!["id"]
-        let url = result!["nested"]!["url"]
+        
+        let nested = result!["nested"] as! JSON
+        let id = nested["id"] as! Int
+        let url = nested["url"] as! String
         
         XCTAssertTrue(id == 123, "Should encode model with custom key path delimiter")
         XCTAssertTrue(url == "http://url.com", "Should encode model with custom key path delimiter")

@@ -2,7 +2,7 @@
 //  TestKeyPathModel.swift
 //  GlossExample
 //
-//  Created by Rahul Katariya on 2/1/16.
+//  Created by Maciej Kołek on 10/18/16.
 //  Copyright © 2016 Harlan Kellaway. All rights reserved.
 //
 
@@ -13,7 +13,7 @@ struct TestKeyPathModel: Glossy {
     
     let id: Int?
     let name: String?
-    let url: NSURL?
+    let url: URL?
     
     init?(json: JSON) {
         self.id = "id" <~~ json
@@ -30,3 +30,4 @@ struct TestKeyPathModel: Glossy {
     }
     
 }
+

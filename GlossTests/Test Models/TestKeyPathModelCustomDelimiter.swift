@@ -2,7 +2,7 @@
 //  TestKeyPathModelCustomDelimiter.swift
 //  GlossExample
 //
-//  Created by Harlan Kellaway on 2/7/16.
+//  Created by Maciej Kołek on 10/18/16.
 //  Copyright © 2016 Harlan Kellaway. All rights reserved.
 //
 
@@ -12,11 +12,11 @@ import Gloss
 struct TestKeyPathModelCustomDelimiter: Glossy {
     
     let id: Int?
-    let url: NSURL?
+    let url: URL?
     
     init?(json: JSON) {
-        self.id = Decoder.decode("nested*id", keyPathDelimiter: "*")(json)
-        self.url = Decoder.decodeURL("nested*url", keyPathDelimiter: "*")(json)
+        self.id = Decoder.decode(key: "nested*id", keyPathDelimiter: "*")(json)
+        self.url = Decoder.decode(urlForKey: "nested*url", keyPathDelimiter: "*")(json)
     }
     
     func toJSON() -> JSON? {

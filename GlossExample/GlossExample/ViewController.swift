@@ -23,6 +23,7 @@
 // THE SOFTWARE.
 //
 
+import Gloss
 import UIKit
 
 class ViewController: UIViewController {
@@ -30,7 +31,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let repoJSON = [
+        let repoJSON: JSON = [
             "id" : 40102424,
             "name": "Gloss",
             "description" : "A shiny JSON parsing library in Swift",
@@ -43,10 +44,8 @@ class ViewController: UIViewController {
             "language" : "Swift"
             ]
         
-        guard let repo = Repo(json: repoJSON) else
-        {
-            print("Issue deserializing model")
-            
+        guard let repo = Repo(json: repoJSON) else {
+            print("DECODING FAILURE :(")
             return
         }
         
@@ -55,19 +54,27 @@ class ViewController: UIViewController {
         print(repo.desc)
         print(repo.url)
         print(repo.owner)
-        print(repo.ownerUrl)
+        print(repo.ownerURL)
         print(repo.primaryLanguage?.rawValue)
         print("")
         
         print("JSON: \(repo.toJSON())")
         print("")
         
-        let repos = [Repo].fromJSONArray([repoJSON, repoJSON, repoJSON])
+        guard let repos = [Repo].from(jsonArray: [repoJSON, repoJSON, repoJSON]) else {
+            print("DECODING FAILURE :(")
+            return
+        }
         
         print("REPOS: \(repos)")
         print("")
         
-        print("JSON ARRAY: \(repos.toJSONArray())")
+        guard let jsonArray = repos.toJSONArray() else {
+            print("ENCODING FAILURE :(")
+            return
+        }
+        
+        print("JSON ARRAY: \(jsonArray)")
 
     }
 }

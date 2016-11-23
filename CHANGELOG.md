@@ -2,13 +2,106 @@
 All notable changes to this project will be documented in this file.
 `Gloss` adheres to [Semantic Versioning](http://semver.org/).
 
-- `0.7.x` Releases - [0.7.0](#070) | [0.7.1](#071)
+- `1.1.x` Releases - [1.1.0](#110)
+- `1.0.x` Releases - [1.0.0](#100)
+- `0.8.x` Releases - [0.8.0](#080)
+- `0.7.x` Releases - [0.7.0](#070) | [0.7.1](#071) | [0.7.2](#072) | [0.7.3](#073) | [0.7.4](#074)
 - `0.6.x` Releases - [0.6.0](#060) | [0.6.1](#061) | [0.6.2](#062)
 - `0.5.x` Releases - [0.5.0](#050) | [0.5.1](#051) | [0.5.2](#052) | [0.5.3](#053) | [0.5.4](#054)
 - `0.4.x` Releases - [0.4.0](#040)
-- `0.3.x` Releases - [0.3.0](#030) | [0.3.1](#031) 
-- `0.2.x` Releases - [0.2.0](#020) 
-- `0.1.x` Releases - [0.1.0](#010) 
+- `0.3.x` Releases - [0.3.0](#030) | [0.3.1](#031)
+- `0.2.x` Releases - [0.2.0](#020)
+- `0.1.x` Releases - [0.1.0](#010)
+
+---
+
+## [1.1.0](https://github.com/hkellaway/Gloss/releases/tag/1.1.0)
+Released on 2016-10-25. All issues associated with this milestone can be found using this [filter](https://github.com/hkellaway/Gloss/issues?utf8=%E2%9C%93&q=milestone%3A1.1.0)
+
+#### Reintrocued
+- Nested keypaths feature [PR [#225](https://github.com/hkellaway/Gloss/pull/225)]
+
+#### Added
+- Support for de/encoding UUID types [PR [#226](https://github.com/hkellaway/Gloss/pull/226)]
+
+---
+
+## [1.0.0](https://github.com/hkellaway/Gloss/releases/tag/1.0.0)
+Released on 2016-09-20. All issues associated with this milestone can be found using this [filter](https://github.com/hkellaway/Gloss/issues?utf8=%E2%9C%93&q=milestone%3A1.0.0)
+
+#### Updated
+- JSON typealias now uses Any instead of AnyObject [Issue [#212](https://github.com/hkellaway/Gloss/pull/212)]
+- Support for Swift 3.0 [PR [#212](https://github.com/hkellaway/Gloss/pull/214)]
+- Syntax now reflects Swift 3.0 standards [PR [#216](https://github.com/hkellaway/Gloss/pull/216)]
+
+#### Upgrade Notes
+
+This version marks the first version using Swift 3.0 syntax. Users should update client projects to Swift 3.0 before switching to `1.0.0`
+
+Also note: Version `0.8.0` marked the deprecation of a feature called "nested keypaths". This allowed deeply nested JSON values to be accessed via a period-delimited key. However, this feature was reintroduced in version 1.1.0.
+
+---
+
+## [0.8.0](https://github.com/hkellaway/Gloss/releases/tag/0.8.0)
+Released on 2016-09-20. All issues associated with this milestone can be found using this [filter](https://github.com/hkellaway/Gloss/issues?utf8=%E2%9C%93&q=milestone%3A0.8.0)
+
+#### Deprecated
+- The "nested keypaths" feature has been removed as it caused a runtime crash for the Release configuration (Issue [#135](https://github.com/hkellaway/Gloss/issues/135))
+
+#### Updated
+- Array decoding now returns `nil` if any decodings fail instead of a partial array of decoded values (Issue [#189](https://github.com/hkellaway/Gloss/issues/189))
+- Support for Swift 2.3 [PR [#209](https://github.com/hkellaway/Gloss/pull/209)]
+
+#### Upgrade Notes
+
+This version marks the deprecation of a feature called "nested keypaths". This allowed deeply nested JSON values to be accessed via a period-delimited key. However, it caused a runtime crash when using the Release configuration in prior version (see [Nested Keypaths Deprecation](https://github.com/hkellaway/Gloss#nested-keypaths-deprecation). However, this feature was reintroduced in version 1.1.0.
+
+Also note: this version marks the last that will use Swift 2.x syntax. Version `1.0.0` will support Swift 3.0 and any improvements to Gloss thereafter will use Swift 3.0 syntax.
+
+---
+
+## [0.7.4](https://github.com/hkellaway/Gloss/releases/tag/0.7.4)
+Released on 2016-07-14. All issues associated with this milestone can be found using this [filter](https://github.com/hkellaway/Gloss/issues?utf8=%E2%9C%93&q=milestone%3A0.7.4)
+
+#### Added
+- De/Encoding for UIInt32, [UIInt32], UInt64, and [UInt64] [PR [#168](https://github.com/hkellaway/Gloss/pull/168)]
+- Support for Swift 2.3 [PR [#178](https://github.com/hkellaway/Gloss/pull/178)]
+- Separate `swift_2.3` and `swift_3.0` branches
+
+#### Fixed
+- Occasional Carthage build failure [PR [#180](https://github.com/hkellaway/Gloss/pull/180)]
+
+#### Removed
+- Documentation on nested keypaths until [Issue [#135](https://github.com/hkellaway/Gloss/issues/135)] is resolved
+
+---
+
+## [0.7.3](https://github.com/hkellaway/Gloss/releases/tag/0.7.3)
+Released on 2016-05-04. All issues associated with this milestone can be found using this [filter](https://github.com/hkellaway/Gloss/issues?utf8=%E2%9C%93&q=milestone%3A0.7.3)
+
+#### Added
+- De/Encoding for dictionaries with de/encodable model arrays [Issue [#148](https://github.com/hkellaway/Gloss/issues/148)]
+- De/Encoding for Int32 and Int64 [PR [#154](https://github.com/hkellaway/Gloss/pull/154)]
+
+#### Fixed
+- Access modifier inconsistency [PR [#150](https://github.com/hkellaway/Gloss/pull/150)]
+
+#### Updated
+- All documentation to be consistent [PR [#156](https://github.com/hkellaway/Gloss/pull/156)]
+
+---
+
+## [0.7.2](https://github.com/hkellaway/Gloss/releases/tag/0.7.2)
+Released on 2016-04-15. All issues associated with this milestone can be found using this [filter](https://github.com/hkellaway/Gloss/issues?utf8=%E2%9C%93&q=milestone%3A0.7.2)
+
+#### Fixed
+- Issue with encoding Encodable dictonaries that resulted in top-level translation being lost [PR [#126](https://github.com/hkellaway/Gloss/pull/126)]
+- Date parsing failure if non-Gregorian calendar set on device [PR [#129](https://github.com/hkellaway/Gloss/pull/129)]
+- Incorrect decoding of for nested keypaths in Release builds using Swift 2.2 [Issue [#135](https://github.com/hkellaway/Gloss/issues/135)]
+- Usage of lazy NSDateFormatter for ISO 8601 dates [PR [#138](https://github.com/hkellaway/Gloss/pull/138)]
+
+#### Updated
+- Moved tests from Example project to framework project [[PR #131](https://github.com/hkellaway/Gloss/pull/131)]
 
 ---
 
