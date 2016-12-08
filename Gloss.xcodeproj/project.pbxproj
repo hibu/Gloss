@@ -358,6 +358,7 @@
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = N7LXR9A247;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 					};
 					DC683ADA1C2C615D0035EAC3 = {
 						CreatedOnToolsVersion = 7.1;
@@ -638,7 +639,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = N7LXR9A247;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -788,7 +789,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = P7NJG85E7C;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -938,7 +939,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = P7NJG85E7C;
 				DYLIB_COMPATIBILITY_VERSION = 1;
